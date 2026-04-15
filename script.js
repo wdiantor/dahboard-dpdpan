@@ -8,7 +8,7 @@ window.location.href = "dashboard.html";
 alert("Login gagal!");
 }
 }
-fetch("LINK_CSV_KAMU")
+fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vTPECeaQ5IECbtg7YXmvWUJzxEBAl2t5dcLc25GsFPGJtoob1x62gESzV7D7WyviIUBfFaUdCYDIz56/pubhtml")
 .then(res => res.text())
 .then(data => {
 let rows = data.split("\n").slice(1);
