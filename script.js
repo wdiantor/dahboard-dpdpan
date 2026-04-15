@@ -10,10 +10,10 @@ const users = [
 // LOGIN
 // =======================
 function login() {
-let userInput = document.getElementById("username").value;
-let passInput = document.getElementById("password").value;
+const userInput = document.getElementById("username").value;
+const passInput = document.getElementById("password").value;
 
-let foundUser = users.find(u =>
+const foundUser = users.find(u =>
 u.username === userInput && u.password === passInput
 );
 
@@ -34,7 +34,8 @@ alert("Username atau password salah!");
 // CEK LOGIN (PROTEKSI)
 // =======================
 function checkLogin() {
-let isLogin = localStorage.getItem("isLogin");
+const isLogin = localStorage.getItem("isLogin");
+
 if (!isLogin) {
 window.location.href = "index.html";
 }
@@ -49,44 +50,50 @@ window.location.href = "index.html";
 }
 
 // =======================
-// LOAD DATA (HANYA DI DASHBOARD)
+// LOAD DATA (GOOGLE SHEETS)
 // =======================
 function loadData() {
-let table = document.querySelector("#dataTable tbody");
+const table = document.querySelector("#dataTable tbody");
 
-if (!table) return; // biar tidak error di halaman login
+// supaya tidak error di halaman login
+if (!table) return;
 
 fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vTPECeaQ5IECbtg7YXmvWUJzxEBAl2t5dcLc25GsFPGJtoob1x62gESzV7D7WyviIUBfFaUdCYDIz56/pub?output=csv")
 .then(res => res.text())
 .then(data => {
-let rows = data.split("\n").slice(1);
+const rows = data.split("\n").slice(1);
 
 ```
   rows.forEach(row => {
-    let cols = row.split(",");
-    let tr = document.createElement("tr");
+    if (!row.trim()) return; // skip baris kosong
+
+    const cols = row.split(",");
+    const tr = document.createElement("tr");
 
     cols.forEach(col => {
-      let td = document.createElement("td");
+      const td = document.createElement("td");
       td.innerText = col;
       tr.appendChild(td);
     });
 
     table.appendChild(tr);
   });
+})
+.catch(err => {
+  console.error("Gagal load data:", err);
 });
 ```
 
 }
 
 // =======================
-// HANDLE ROLE DI DASHBOARD
+// HANDLE ROLE
 // =======================
 function handleRole() {
-let role = localStorage.getItem("role");
+const role = localStorage.getItem("role");
 
-let roleInfo = document.getElementById("roleInfo");
-let adminBtn = document.getElementById("adminBtn");
+const roleInfo = document.getElementById("roleInfo");
+const adminBtn = document.getElementById("adminBtn");
 
 if (roleInfo) {
 roleInfo.innerText = "Login sebagai: " + role;
@@ -98,10 +105,13 @@ adminBtn.style.display = "inline-block";
 }
 
 // =======================
-// AUTO JALAN SAAT HALAMAN LOAD
+// AUTO LOAD HALAMAN
 // =======================
 window.onload = function () {
+// hanya jalan di dashboard
+if (window.location.pathname.includes("dashboard.html")) {
 checkLogin();
 loadData();
 handleRole();
+}
 };
